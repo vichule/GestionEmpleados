@@ -17,3 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::post('/login/{Email}/{Password}',[UsersController::class,'login']);
+
+
+//Route::middleware('apitoken')->get('/protegido-sin-permiso',....)
+
+//Route::middleware(['apitoken','permisos'])->get('/protegido-con-permiso',....)
