@@ -16,6 +16,43 @@ class UsersController extends Controller
     	$password = $req->password;
 
     	$valido = true;
+
+    	if ($password) {
+    		if (!preg_match(/[a-z]{6,}/,$password)) {
+    			$valido = false;
+    		}else{
+    			$valido = false;
+    		}
+
+    		$email = $req->email;
+
+    		if ($email) {
+    			
+    			if (!preg_match(/[a-z]@{6,}/,$email)) {
+    				$valido = false;
+    			}else if (User::where('email',$email)->first()) {
+    				$valido = false;
+    			}
+
+    		}else{
+    			$valido = false;
+    		}
+
+    		$validator = validator::make(json_decode($req->getContent(),true), 
+    			['Nombre' => 'required|max:55', 
+    			 'Email' => 'required|email|unique:App\Models\User,email|max:30',
+    			 'Password' => '',
+    			 'Salario' => '',
+    			 'Puesto de Trabajo' => '',
+    			 'Biografia' => ''
+
+    			]);
+
+    		if ($validator->fails()) {
+    			//Preparar respuesta
+    			return response()->json()
+    		}
+    	}
     }
 
     public function login(Request $req){
@@ -75,5 +112,5 @@ class UsersController extends Controller
     	//Temporarl: devolver la nueva contraseña en la respuesta
     }
 
-    
+
 }
