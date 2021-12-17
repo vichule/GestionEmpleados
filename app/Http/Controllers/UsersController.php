@@ -55,41 +55,40 @@ class UsersController extends Controller
 		    	
     		}
     		return response()->json($respuesta);
-    	//}
     }
 
 
-    // public function login(Request $req){
-    // 	//Buscar email
-    // 	$email = $require->email;
+    public function login(Request $req){
+    	//Buscar email
+    	$email = $require->email;
 
-    // 	//validar
+    	//validar
 
-    // 	//encontrar al usuario con ese email
-    // 	$usuario = User::where('email',$email)->first();
+    	//encontrar al usuario con ese email
+    	$usuario = User::where('email',$email)->first();
 
-    // 	//Pasar validacion
+    	//Pasar validacion
 
-    // 	//comprobar contraseña
-    // 	if (Hash::check($req->password, $usuario->password)) {
-    // 		//Todo correcto
+    	//comprobar contraseña
+    	if (Hash::check($req->password, $usuario->password)) {
+    		//Todo correcto
 
-    // 		//Generar el api token
-    // 		do{
-    // 			$token = Hash::make($usuario->id.now());
-    // 		}while (User::where('api_token', $token)->first()); 
+    		//Generar el api token
+    		do{
+    			$token = Hash::make($usuario->id.now());
+    		}while (User::where('api_token', $token)->first()); 
     			
-    // 			$usuario->api_token = $token;
-    // 			$usuario->save();
+    			$usuario->api_token = $token;
+    			$usuario->save();
 
-    // 		return response()->json(.../*Incluir el api token*/);
+    		return response()->json(.../*Incluir el api token*/);
     		
 
-    // 	}else{
-    // 		//Login mal
+    	}else{
+    		//Login mal
 
-    // 	}
-    // }
+    	}
+    }
 
     // public function recuperarPass(Request $req){
 
