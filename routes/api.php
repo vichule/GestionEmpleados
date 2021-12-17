@@ -19,11 +19,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/registro',[UsersController::class,'registro']);
-Route::post('/login/{Email}/{Password}',[UsersController::class,'login']);
-Route::get('/recuperarPass{Email}',[UsuariosController::class,'recuperarPass']);
-Route::get('/listar',[UsuariosController::class,'listar']);
+Route::prefix('users')->group(function(){
 
+Route::put('/registrarEmpleado',[UsersController::class,'registrarEmpleado']);
+Route::post('/login/{Email}/{Password}',[UsersController::class,'login']);
+Route::get('/recuperarPass{Email}',[UsersController::class,'recuperarPass']);
+Route::get('/listar',[UsersController::class,'listar']);
+
+});
 //Route::middleware('apitoken')->get('/protegido-sin-permiso',....)
 
 //Route::middleware(['apitoken','permisos'])->get('/protegido-con-permiso',....)

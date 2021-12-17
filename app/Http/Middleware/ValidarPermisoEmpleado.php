@@ -18,7 +18,7 @@ class ValidarPermisoEmpleado
     {
         //Comprobar los permisos
 
-        if($request->usuario->cargo == 'Dir' || $request->usuario->cargo == 'RRHH')
+        if($request->user->PuestoTrabajo == 'Direccion' || $request->user->PuestoTrabajo == 'RRHH')
         return $next($request);
     }else{
         
