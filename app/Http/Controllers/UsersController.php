@@ -41,16 +41,29 @@ class UsersController extends Controller
     		$validator = validator::make(json_decode($req->getContent(),true), 
     			['Nombre' => 'required|max:55', 
     			 'Email' => 'required|email|unique:App\Models\User,email|max:30',
-    			 'Password' => '',
-    			 'Salario' => '',
-    			 'Puesto de Trabajo' => '',
-    			 'Biografia' => ''
+    			 'Password' => 'required|regex:/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}',
+    			 'Salario' => 'required|numeric',
+    			 'PuestoTrabajo' => 'required|in:Direccion,RRHH,Empleado',
+    			 'Biografia' => 'required|max:100'
 
     			]);
 
     		if ($validator->fails()) {
-    			//Preparar respuesta
-    			return response()->json()
+    			$respuesta["status"] = 0
+    			$respuesta["msg"] = $validator->errors();
+    			
+    		}else{
+
+    			$datos = $req->getContent();
+    			$datos = json_decode($datos);
+
+    			$usuario = new User();
+    			$usuario->Nombre = $datos->nombre;
+		    	$usuario->Email = $datos->email;
+		    	$usuario->Password = Hash::make($datos->password);
+		    	$usuario->Salario = $datos->salario;
+		    	$usuario->PuestoTrabajo = $datos->puesto;
+		    	$usuario->Biografia = $datos->biografia;
     		}
     	}
     }

@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,9 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+Route::get('/registro',[UsersController::class,'registro']);
 Route::post('/login/{Email}/{Password}',[UsersController::class,'login']);
-
+Route::get('/recuperarPass{Email}',[UsuariosController::class,'recuperarPass']);
+Route::get('/listar',[UsuariosController::class,'listar']);
 
 //Route::middleware('apitoken')->get('/protegido-sin-permiso',....)
 
