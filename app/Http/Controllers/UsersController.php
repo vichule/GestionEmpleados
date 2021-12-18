@@ -205,7 +205,7 @@ class UsersController extends Controller
 	}
 
 
-	public function detalle(Request $req){
+	public function detalleEmpleado(Request $req){
 
         $respuesta = ["status" => 1, "msg" => ""];
 		$datos = $req-> getContent();
@@ -220,29 +220,37 @@ class UsersController extends Controller
 				if(User::where('api_token','=',$apitoken)->first()){
 
 					$usuario = User::where('api_token','=',$apitoken)->first();
-					
-					if($usuario->PuestoTrabajo == 'RRHH'){
+					if($empleadoSeleccionado){
 						
-						$detalles = DB::Table('users')
-						->select('Nombre','Email', 'Biografia', 'PuestoTrabajo', 'Salario')
-						->where('id', '=', $empleadoSeleccionadoID)
-						->where('PuestoTrabajo', 'like', 'Empleado')
-						->get();
-					}else if($usuario->PuestoTrabajo == 'Directivo'){
+						if($usuario->PuestoTrabajo == 'RRHH'){
 						
-						$detalles = DB::Table('users')
-						->select('Nombre','Email', 'Biografia', 'PuestoTrabajo', 'Salario')
-						->where('id', '=', $empleadoSeleccionadoID)
-						->where(function($puesto){
-							$puesto->where('PuestoTrabajo', 'like', 'Empleado')
-							->orWhere('PuestoTrabajo', 'like', 'RRHH');
-						})
-						
-						->get();
+							$detallesEmpleado = DB::Table('users')
+							->select('Nombre','Email', 'Biografia', 'PuestoTrabajo', 'Salario')
+							->where('id', '=', $empleadoSeleccionadoID)
+							->where('PuestoTrabajo', 'like', 'Empleado')
+							->get();
+						}else if($usuario->PuestoTrabajo == 'Direccion'){
 
+							$detallesEmpleado = DB::Table('users')
+							->select('Nombre','Email', 'Biografia', 'PuestoTrabajo', 'Salario')
+							->where('id', '=', $empleadoSeleccionadoID)
+							->where(function($puesto){
+								$puesto->where('PuestoTrabajo', 'like', 'Empleado')
+								->orWhere('PuestoTrabajo', 'like', 'RRHH');
+							})
+							
+							->get();
+							
+						}
+						
+						$respuesta = $detallesEmpleado;
+
+					}else{
+
+						$respuesta['status'] = 0;
+						$respuesta['msg'] = "El usuario que busca no existe o se ha equivocado";
 					}
 					
-					$respuesta = $detalles;
 				}			
 			}catch(\Exception $e){
 				$respuesta['status'] = 0;

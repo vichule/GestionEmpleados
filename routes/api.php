@@ -31,6 +31,7 @@ Route::middleware(['apitoken','permisos'])->prefix('users')->group(function(){
 
     Route::put('/registrarEmpleado',[UsersController::class,'registrarEmpleado']);
 	Route::get('/listar',[UsersController::class,'listar']);
+	Route::get('/detalleEmpleado',[UsersController::class,'detalleEmpleado']);
 
 });
 
