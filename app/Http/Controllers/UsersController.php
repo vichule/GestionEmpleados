@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Mail\OrderShipped;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class UsersController extends Controller
 {
@@ -112,7 +113,7 @@ class UsersController extends Controller
     	return response()->json($respuesta);
 
 		//contraseña RRHH Hola123 -> apitoken 
-		//contraseña Javier(directivo) 11uErr4 -> apitoken $2y$10$nnIAIafNQkKdtH2omANtsOtBE4FBThOwr43t44gxDjpa7XRZq3lwi
+		//contraseña Javier(directivo) 11uErr4 *nueva(SO2rpa4Z) -> apitoken $2y$10$nnIAIafNQkKdtH2omANtsOtBE4FBThOwr43t44gxDjpa7XRZq3lwi
     }
 
     public function recuperarPass(Request $req){
@@ -128,25 +129,25 @@ class UsersController extends Controller
 
 		if($usuario = User::where('Email',$email)->first()){
 			$usuario = User::where('Email',$email)->first();
-			//Si encontramos al usuario
-				do{
-					$apitoken = Hash::make($usuario->id.now());
-				}while (User::where('api_token', $apitoken)->first()); 
-					
-					//$password = /*generarla aleatoriamente*/;
-					$usuario->password = Hash::make($password);
+			//Si encontramos al usuario 
+			$usuario->api_token = null;
 
-					$usuario->api_token = null;
-					$usuario->save();
-	
-					try{
-						$respuesta["status"] = 0;
-						$respuesta["msg"] = "Contraseña enviada al email";
-						
-					}catch(\Exception $e){
-						$respuesta['status'] = 0;
-						$respuesta['msg'] = "Se ha producido un error ".$e->getMessage();
-					}
+			//$newPassword = /*generarla aleatoriamente*/;
+
+			$password = Str::random(8);
+			
+			$usuario->Password = Hash::make($password);
+			$usuario->save();
+
+			try{
+				Mail::to($usuario->Email)->send(new OrderShipped($password));
+				$respuesta["status"] = 0;
+				$respuesta["msg"] = "Password enviada al email";
+				
+			}catch(\Exception $e){
+				$respuesta['status'] = 0;
+				$respuesta['msg'] = "Se ha producido un error ".$e->getMessage();
+			}
 
 		}else{
 			

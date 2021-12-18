@@ -22,7 +22,7 @@ use App\Http\Controllers\UsersController;
 Route::prefix('users')->group(function(){
 
 	Route::post('/login',[UsersController::class,'login']);
-	Route::get('/recuperarPass{Email}',[UsersController::class,'recuperarPass']);
+	Route::post('/recuperarPass',[UsersController::class,'recuperarPass']);
 
 });
 

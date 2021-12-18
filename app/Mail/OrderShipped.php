@@ -11,19 +11,17 @@ class OrderShipped extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $asunto;
+    public $password;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($asunto,$titulo,$datos)
+    public function __construct($password)
     {
         //
-        $this->asunto = $asunto;
-        $this->titulo = $titulo;
-        $this->datos = $datos;
+        $this->password = $password;
     }
 
     /**
@@ -33,6 +31,6 @@ class OrderShipped extends Mailable
      */
     public function build()
     {
-        //return $this->subject($this->asunto)->view('password');
+        return $this->subject('Solicitud Password')->view('password');
     }
 }
