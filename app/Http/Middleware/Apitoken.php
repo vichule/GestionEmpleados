@@ -2,11 +2,12 @@
 
 namespace App\Http\Middleware;
 
+
 use Closure;
 use Illuminate\Http\Request;
 use App\Models\User;
 
-class VerificarApitoken
+class Apitoken
 {
     /**
      * Handle an incoming request.
@@ -19,20 +20,19 @@ class VerificarApitoken
     {
         //Buscar al usuario
         if(isset($request->api_token)){
-
             $apitoken = $request->api_token;
-            if($usuario = User::where('api_token',$apitoken)->first()){
-                $usuario = User::where('api_token',$apitoken)->first();
-                $respuesta["msg"] = "El Api token es correcto";
-                $request->user = $usuario;
+            if($user = User::where('api_token',$apitoken)->first()){
+                $user = User::where('api_token',$apitoken)->first();
+                $respuesta["msg"] = "Api token valido";
+                $request->user = $user;
                 return $next($request);
             }else{
-                $respuesta["msg"] = "Api Token incorrecto";
+                $respuesta["msg"] = "Token invalido";
             }
 
         }else{
-            $respuesta["status"] = 0;   
-            $respuesta["msg"] = "Api Token no ha sido introducido";
+            $respuesta["status"] = 0;
+            $respuesta["msg"] = "Token no ingresado";
         }
 
         return response()->json($respuesta);

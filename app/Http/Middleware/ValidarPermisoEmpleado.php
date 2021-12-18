@@ -28,6 +28,6 @@ class ValidarPermisoEmpleado
         //Fallo
         }
 
-        return response()->json($respuesta);
+        return response()->json($request);
     }
 }

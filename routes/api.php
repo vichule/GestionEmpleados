@@ -15,9 +15,9 @@ use App\Http\Controllers\UsersController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::prefix('users')->group(function(){
 
@@ -28,9 +28,9 @@ Route::prefix('users')->group(function(){
 	
 
 });
-Route::middleware('apitoken','permisos')->prefix('users')->group(function(){
+Route::middleware(['apitoken','permisos'])->prefix('users')->group(function(){
 
-	Route::get('/listar',[UsersController::class,'listar']);
+	//Route::get('/listar',[UsersController::class,'listar']);
 	Route::put('/registrarEmpleado',[UsersController::class,'registrarEmpleado']);
 
 });
