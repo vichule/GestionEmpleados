@@ -173,18 +173,18 @@ class UsersController extends Controller
 			try{
 
 				if(User::where('api_token','=',$apitoken)->first()){
-
+					
 					$usuario = User::where('api_token','=',$apitoken)->first();
 					
 					if($usuario->PuestoTrabajo == 'RRHH'){
 						
-						$empleados = DB::Table('Empleados')
+						$empleados = DB::Table('users')
 						->select('Nombre', 'PuestoTrabajo', 'Salario')
 						->where('PuestoTrabajo', 'like', 'Empleado')
 						->get();
-					}else if($usuario->PuestoTrabajo == 'Directivo'){
+					}else if($usuario->PuestoTrabajo == 'Direccion'){
 						
-						$empleados = DB::Table('Empleados&RRHH')
+						$empleados = DB::Table('users')
 						->select('Nombre', 'PuestoTrabajo', 'Salario')
 						->where(function($puesto){
 							$puesto->where('PuestoTrabajo', 'like', 'Empleado')
@@ -194,7 +194,7 @@ class UsersController extends Controller
 						->get();
 
 					}
-					print('hola');
+					
 					$respuesta = $empleados;
 				}			
 			}catch(\Exception $e){
@@ -223,14 +223,14 @@ class UsersController extends Controller
 					
 					if($usuario->PuestoTrabajo == 'RRHH'){
 						
-						$detalles = DB::Table('Empleado')
+						$detalles = DB::Table('users')
 						->select('Nombre','Email', 'Biografia', 'PuestoTrabajo', 'Salario')
 						->where('id', '=', $empleadoSeleccionadoID)
 						->where('PuestoTrabajo', 'like', 'Empleado')
 						->get();
 					}else if($usuario->PuestoTrabajo == 'Directivo'){
 						
-						$detalles = DB::Table('Empleado&RRHH')
+						$detalles = DB::Table('users')
 						->select('Nombre','Email', 'Biografia', 'PuestoTrabajo', 'Salario')
 						->where('id', '=', $empleadoSeleccionadoID)
 						->where(function($puesto){
@@ -241,7 +241,7 @@ class UsersController extends Controller
 						->get();
 
 					}
-					print('hola');
+					
 					$respuesta = $detalles;
 				}			
 			}catch(\Exception $e){
