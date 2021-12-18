@@ -24,12 +24,14 @@ Route::prefix('users')->group(function(){
 	Route::post('/login/{Email}/{Password}',[UsersController::class,'login']);
 	Route::get('/recuperarPass{Email}',[UsersController::class,'recuperarPass']);
 
+	
+	
 
 });
 Route::middleware('apitoken','permisos')->prefix('users')->group(function(){
 
-	Route::put('/registrarEmpleado',[UsersController::class,'registrarEmpleado']);
 	Route::get('/listar',[UsersController::class,'listar']);
+	Route::put('/registrarEmpleado',[UsersController::class,'registrarEmpleado']);
 
 });
 

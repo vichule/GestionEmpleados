@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class ValidarPermisoEmpleado
 {
@@ -18,10 +19,12 @@ class ValidarPermisoEmpleado
     {
         //Comprobar los permisos
 
-        if($request->user->PuestoTrabajo == 'Direccion' || $request->user->PuestoTrabajo == 'RRHH')
-        return $next($request);
-    }else{
+        if($request->user->PuestoTrabajo == 'Direccion' || $request->user->PuestoTrabajo == 'RRHH'){
+            return $next($request);
+
+        }else{
         
         //Fallo
+        }
     }
 }

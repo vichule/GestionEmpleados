@@ -59,13 +59,13 @@ class UsersController extends Controller
 
 
     public function login(Request $req){
+		$respuesta = ["status" => 1, "msg" => ""];
     	//Buscar email
     	$email = $require->email;
 
-    	//validar
-
+		//validar
     	//encontrar al usuario con ese email
-    	$usuario = User::where('email',$email)->first();
+    	$usuario = User::where('Email',$email)->first();
 
     	//Pasar validacion
 
@@ -75,18 +75,25 @@ class UsersController extends Controller
 
     		//Generar el api token
     		do{
-    			$token = Hash::make($usuario->id.now());
-    		}while (User::where('api_token', $token)->first()); 
+    			$apitoken = Hash::make($usuario->id.now());
+    		}while (User::where('api_token', $apitoken)->first()); 
     			
-    			$usuario->api_token = $token;
+    			$usuario->api_token = $apitoken;
     			$usuario->save();
 
-    		return response()->json(.../*Incluir el api token*/);
-    		
+				try{
+		            
+		    		return response()->json($apitoken);
+		            
+		    	}catch(\Exception $e){
+		    		$respuesta['status'] = 0;
+		    		$respuesta['msg'] = "Se ha producido un error ".$e->getMessage();
+		    	}
 
     	}else{
     		//Login mal
-
+			$respuesta["status"] = 0;
+            $respuesta["msg"] = "El login ha fallado, pruebe de nuevo";
     	}
     }
 
