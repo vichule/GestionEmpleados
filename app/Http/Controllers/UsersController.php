@@ -90,7 +90,7 @@ class UsersController extends Controller
 	
 					try{
 						$respuesta["status"] = 0;
-						$respuesta["msg"] = "Login correcto  ".$usuario->api_token;
+						$respuesta["msg"] = "Login correcto, tu token es: ".$usuario->api_token;
 						//return response()->json($apitoken);
 						
 					}catch(\Exception $e){
@@ -112,9 +112,9 @@ class UsersController extends Controller
 			
 		}
     	return response()->json($respuesta);
-
+		
 		//contraseña RRHH Hola123 -> apitoken 
-		//contraseña Javier(directivo) 11uErr4 *nueva(SO2rpa4Z) -> apitoken $2y$10$nnIAIafNQkKdtH2omANtsOtBE4FBThOwr43t44gxDjpa7XRZq3lwi
+		//contraseña Javier(directivo) 11uErr4 *nueva(SO2rpa4Z)DALOcCri -> apitoken $2y$10$nnIAIafNQkKdtH2omANtsOtBE4FBThOwr43t44gxDjpa7XRZq3lwi
     }
 
     public function recuperarPass(Request $req){
