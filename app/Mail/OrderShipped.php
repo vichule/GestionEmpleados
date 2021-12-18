@@ -18,10 +18,12 @@ class OrderShipped extends Mailable
      *
      * @return void
      */
-    public function __construct($asunto)
+    public function __construct($asunto,$titulo,$datos)
     {
         //
         $this->asunto = $asunto;
+        $this->titulo = $titulo;
+        $this->datos = $datos;
     }
 
     /**
@@ -31,6 +33,6 @@ class OrderShipped extends Mailable
      */
     public function build()
     {
-        return $this->subject('Solicitud Password')view('password');
+        //return $this->subject($this->asunto)->view('password');
     }
 }

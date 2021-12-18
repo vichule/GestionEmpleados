@@ -110,32 +110,56 @@ class UsersController extends Controller
 			
 		}
     	return response()->json($respuesta);
+
+		//contraseña RRHH Hola123 -> apitoken 
+		//contraseña Javier(directivo) 11uErr4 -> apitoken $2y$10$nnIAIafNQkKdtH2omANtsOtBE4FBThOwr43t44gxDjpa7XRZq3lwi
     }
 
-    // public function recuperarPass(Request $req){
+    public function recuperarPass(Request $req){
 
-    // 	//Obtener el email y validarlo como login
+		$respuesta = ["status" => 1, "msg" => ""];
 
-    // 	//Buscar email
-    // 	$email = $require->email;
+		$datos = $req->getContent();
+		$datos = json_decode($datos);
 
-    // 	//validar
+    	//Buscar email
+    	$email = $datos->Email;
+    	//Obtener el email y validarlo como login
 
-    // 	//encontrar al usuario con ese email
-    // 	$usuario = User::where('email',$email)->first();
+		if($usuario = User::where('Email',$email)->first()){
+			$usuario = User::where('Email',$email)->first();
+			//Si encontramos al usuario
+				do{
+					$apitoken = Hash::make($usuario->id.now());
+				}while (User::where('api_token', $apitoken)->first()); 
+					
+					//$password = /*generarla aleatoriamente*/;
+					$usuario->password = Hash::make($password);
 
+					$usuario->api_token = null;
+					$usuario->save();
+	
+					try{
+						$respuesta["status"] = 0;
+						$respuesta["msg"] = "Contraseña enviada al email";
+						
+					}catch(\Exception $e){
+						$respuesta['status'] = 0;
+						$respuesta['msg'] = "Se ha producido un error ".$e->getMessage();
+					}
+
+		}else{
+			
+				$respuesta["status"] = 0;
+				$respuesta["msg"] = "El email es incorrecto o no existe";
+			
+		}
+    	return response()->json($respuesta);
     	
-    // 	//Si encontramos al usuario
-    // 	$usuario->api_token = null;
+    	
 
-    // 	$password = /*generarla aleatoriamente*/;
-
-    // 	$usuario->password = Hash::make($password);
-
-    // 	//Enviarla por email
-
-    // 	//Temporarl: devolver la nueva contraseña en la respuesta
-    // }
+    	//Enviarla por email
+    }
 
 
 }
