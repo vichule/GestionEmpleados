@@ -31,6 +31,6 @@ class OrderShipped extends Mailable
      */
     public function build()
     {
-        return $this->subject('Solicitud Password')->view('password');
+        return $this->subject('Solicitud nueva Password')->view('password');
     }
 }

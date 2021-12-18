@@ -10,6 +10,7 @@ use App\Mail\OrderShipped;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class UsersController extends Controller
 {
@@ -99,9 +100,9 @@ class UsersController extends Controller
 	
 			}else{
 				//Login mal
-				print($usuario);
+				
 				$respuesta["status"] = 0;
-				$respuesta["msg"] = "El login ha fallado, pruebe de nuevo";
+				$respuesta["msg"] = "El login ha fallado, pruebe de nuevo ".$usuario->Nombre;
 			}
 
 		}else{
@@ -140,6 +141,7 @@ class UsersController extends Controller
 			$usuario->save();
 
 			try{
+				//Enviarla por email
 				Mail::to($usuario->Email)->send(new OrderShipped($password));
 				$respuesta["status"] = 0;
 				$respuesta["msg"] = "Password enviada al email";
@@ -155,12 +157,98 @@ class UsersController extends Controller
 				$respuesta["msg"] = "El email es incorrecto o no existe";
 			
 		}
-    	return response()->json($respuesta);
-    	
-    	
-
-    	//Enviarla por email
+    	return response()->json($respuesta);	
     }
 
+
+	public function listar(Request $req){
+
+        $respuesta = ["status" => 1, "msg" => ""];
+		$datos = $req-> getContent();
+        $datos = json_decode($datos);  
+			
+		$apitoken = $req->query('api_token');
+		$empleados = $req->query('empleados');
+			
+			try{
+
+				if(User::where('api_token','=',$apitoken)->first()){
+
+					$usuario = User::where('api_token','=',$apitoken)->first();
+					
+					if($usuario->PuestoTrabajo == 'RRHH'){
+						
+						$empleados = DB::Table('Empleados')
+						->select('Nombre', 'PuestoTrabajo', 'Salario')
+						->where('PuestoTrabajo', 'like', 'Empleado')
+						->get();
+					}else if($usuario->PuestoTrabajo == 'Directivo'){
+						
+						$empleados = DB::Table('Empleados&RRHH')
+						->select('Nombre', 'PuestoTrabajo', 'Salario')
+						->where(function($puesto){
+							$puesto->where('PuestoTrabajo', 'like', 'Empleado')
+							->orWhere('PuestoTrabajo', 'like', 'RRHH');
+						})
+						
+						->get();
+
+					}
+					print('hola');
+					$respuesta = $empleados;
+				}			
+			}catch(\Exception $e){
+				$respuesta['status'] = 0;
+				$respuesta['msg'] = "Se ha producido un error: ".$e->getMessage();
+			}		
+		return response()->json($respuesta);
+	}
+
+
+	public function detalle(Request $req){
+
+        $respuesta = ["status" => 1, "msg" => ""];
+		$datos = $req-> getContent();
+        $datos = json_decode($datos);  
+			
+		$apitoken = $req->query('api_token');
+		$empleadoSeleccionadoID = $req->query('empleadoID');
+		$empleadoSeleccionado = User::find($empleadoSeleccionadoID);
+
+			try{
+
+				if(User::where('api_token','=',$apitoken)->first()){
+
+					$usuario = User::where('api_token','=',$apitoken)->first();
+					
+					if($usuario->PuestoTrabajo == 'RRHH'){
+						
+						$detalles = DB::Table('Empleado')
+						->select('Nombre','Email', 'Biografia', 'PuestoTrabajo', 'Salario')
+						->where('id', '=', $empleadoSeleccionadoID)
+						->where('PuestoTrabajo', 'like', 'Empleado')
+						->get();
+					}else if($usuario->PuestoTrabajo == 'Directivo'){
+						
+						$detalles = DB::Table('Empleado&RRHH')
+						->select('Nombre','Email', 'Biografia', 'PuestoTrabajo', 'Salario')
+						->where('id', '=', $empleadoSeleccionadoID)
+						->where(function($puesto){
+							$puesto->where('PuestoTrabajo', 'like', 'Empleado')
+							->orWhere('PuestoTrabajo', 'like', 'RRHH');
+						})
+						
+						->get();
+
+					}
+					print('hola');
+					$respuesta = $detalles;
+				}			
+			}catch(\Exception $e){
+				$respuesta['status'] = 0;
+				$respuesta['msg'] = "Se ha producido un error: ".$e->getMessage();
+			}		
+		return response()->json($respuesta);
+	}
 
 }
