@@ -23,8 +23,11 @@ class ValidarPermisoEmpleado
             return $next($request);
 
         }else{
-        
+            $respuesta["status"] = 0;
+            $respuesta["msg"] = "Permiso denegado";
         //Fallo
         }
+
+        return response()->json($respuesta);
     }
 }

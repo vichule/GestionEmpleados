@@ -21,7 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('users')->group(function(){
 
-	Route::post('/login/{Email}/{Password}',[UsersController::class,'login']);
+	Route::post('/login',[UsersController::class,'login']);
 	Route::get('/recuperarPass{Email}',[UsersController::class,'recuperarPass']);
 
 	

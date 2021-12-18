@@ -60,41 +60,56 @@ class UsersController extends Controller
 
     public function login(Request $req){
 		$respuesta = ["status" => 1, "msg" => ""];
+
+		$datos = $req->getContent();
+		$datos = json_decode($datos);
+
     	//Buscar email
-    	$email = $require->email;
+    	$email = $datos->Email;
 
 		//validar
     	//encontrar al usuario con ese email
-    	$usuario = User::where('Email',$email)->first();
-
+    	
+		
     	//Pasar validacion
+		if($usuario = User::where('Email',$email)->first()){
+			$usuario = User::where('Email',$email)->first();
+			//comprobar contraseña
+			if (Hash::check($datos->Password, $usuario->Password)) {
+				//Todo correcto
+	
+				//Generar el api token
+				do{
+					$apitoken = Hash::make($usuario->id.now());
+				}while (User::where('api_token', $apitoken)->first()); 
+					
+					$usuario->api_token = $apitoken;
+					$usuario->save();
+	
+					try{
+						$respuesta["status"] = 0;
+						$respuesta["msg"] = "Login correcto  ".$usuario->api_token;
+						//return response()->json($apitoken);
+						
+					}catch(\Exception $e){
+						$respuesta['status'] = 0;
+						$respuesta['msg'] = "Se ha producido un error ".$e->getMessage();
+					}
+	
+			}else{
+				//Login mal
+				print($usuario);
+				$respuesta["status"] = 0;
+				$respuesta["msg"] = "El login ha fallado, pruebe de nuevo";
+			}
 
-    	//comprobar contraseña
-    	if (Hash::check($req->password, $usuario->password)) {
-    		//Todo correcto
-
-    		//Generar el api token
-    		do{
-    			$apitoken = Hash::make($usuario->id.now());
-    		}while (User::where('api_token', $apitoken)->first()); 
-    			
-    			$usuario->api_token = $apitoken;
-    			$usuario->save();
-
-				try{
-		            
-		    		return response()->json($apitoken);
-		            
-		    	}catch(\Exception $e){
-		    		$respuesta['status'] = 0;
-		    		$respuesta['msg'] = "Se ha producido un error ".$e->getMessage();
-		    	}
-
-    	}else{
-    		//Login mal
-			$respuesta["status"] = 0;
-            $respuesta["msg"] = "El login ha fallado, pruebe de nuevo";
-    	}
+		}else{
+			
+				$respuesta["status"] = 0;
+				$respuesta["msg"] = "El login ha fallado, pruebe de nuevo";
+			
+		}
+    	return response()->json($respuesta);
     }
 
     // public function recuperarPass(Request $req){
